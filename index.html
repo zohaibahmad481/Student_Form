@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Form</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { 
+            max-width: 900px; 
+            margin: 0 auto; 
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+        .header h1 { 
+            font-size: 2.5em; 
+            font-weight: 700; 
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        .form-container { 
+            padding: 40px; 
+            background: #f8f9fa;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .form-group { margin-bottom: 20px; }
+        .form-group.full-width { grid-column: 1 / -1; }
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: 600;
+            color: #495057;
+            font-size: 14px;
+        }
+        input, textarea { 
+            width: 100%; 
+            padding: 15px; 
+            border: 2px solid #e9ecef; 
+            border-radius: 12px; 
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        input.invalid { 
+            border-color: #e74c3c; 
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+        }
+        .error-msg { 
+            color: #e74c3c; 
+            font-size: 12px; 
+            margin-top: 5px; 
+            display: none;
+            font-weight: 500;
+        }
+        textarea { height: 100px; resize: vertical; }
+        .submit-btn { 
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white; 
+            padding: 15px 40px; 
+            border: none; 
+            border-radius: 25px; 
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto 0;
+            min-width: 200px;
+        }
+        .submit-btn:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+        }
+        .status { 
+            padding: 15px 20px; 
+            margin: 20px 0; 
+            border-radius: 12px; 
+            display: none;
+            font-weight: 500;
+            text-align: center;
+        }
+        .success { 
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+        }
+        .error { 
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        .data-section { 
+            display: none; 
+            padding: 40px;
+            background: white;
+        }
+        .data-section h2 {
+            color: #495057;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+            text-align: center;
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        th, td { 
+            padding: 15px 20px; 
+            text-align: left; 
+            border-bottom: 1px solid #ecf0f1;
+        }
+        th { 
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+        td { background: #f8f9fa; }
+        tr:last-child td { border-bottom: none; }
+        @media (max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .container { margin: 10px; border-radius: 15px; }
+            .header { padding: 20px; }
+            .form-container, .data-section { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Student Information Form</h1>
+        </div>
+        
+        <div class="form-container">
+            <form id="studentForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" required>
+                        <div class="error-msg" id="nameError">Name must be at least 2 characters</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                        <div class="error-msg" id="emailError">Please enter a valid email</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="age">Age</label>
+                        <input type="number" id="age" name="age" min="1" max="100" required>
+                        <div class="error-msg" id="ageError">Age must be between 1-100</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="rollNumber">Roll Number</label>
+                        <input type="text" id="rollNumber" name="rollNumber" required>
+                        <div class="error-msg" id="rollNumberError">Roll number is required</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="class">Class</label>
+                        <input type="text" id="class" name="class" required>
+                        <div class="error-msg" id="classError">Class is required</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="tel" id="phone" name="phone" pattern="[0-9]{10,15}" required>
+                        <div class="error-msg" id="phoneError">Phone must be 10-15 digits</div>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="address">Address</label>
+                        <textarea id="address" name="address" required></textarea>
+                        <div class="error-msg" id="addressError">Address is required</div>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="skills">Skills</label>
+                        <textarea id="skills" name="skills" required></textarea>
+                        <div class="error-msg" id="skillsError">Skills are required</div>
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn">Submit Form</button>
+            </form>
+            
+            <div id="status" class="status"></div>
+        </div>
+
+        <div id="dataSection" class="data-section">
+            <h2>Submitted Data</h2>
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function validateField(field, value) {
+            const errorElement = document.getElementById(field + 'Error');
+            let isValid = true;
+            
+            switch(field) {
+                case 'name':
+                    isValid = value.length >= 2;
+                    break;
+                case 'email':
+                    isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+                    break;
+                case 'age':
+                    isValid = value >= 1 && value <= 100;
+                    break;
+                case 'phone':
+                    isValid = /^[0-9]{10,15}$/.test(value);
+                    break;
+                default:
+                    isValid = value.trim().length > 0;
+            }
+            
+            const input = document.getElementById(field);
+            if (isValid) {
+                input.classList.remove('invalid');
+                errorElement.style.display = 'none';
+            } else {
+                input.classList.add('invalid');
+                errorElement.style.display = 'block';
+            }
+            
+            return isValid;
+        }
+
+        document.getElementById('studentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+            
+            let isFormValid = true;
+            Object.entries(data).forEach(([key, value]) => {
+                if (!validateField(key, value)) {
+                    isFormValid = false;
+                }
+            });
+            
+            if (!isFormValid) {
+                showStatus('Please fix the errors above', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('https://zrsyco481.app.n8n.cloud/webhook/whatapp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const responseData = await response.json();
+                
+                if (response.ok) {
+                    data.status = responseData.status || 'Success';
+                    showStatus('Form submitted successfully! Data saved to database.', 'success');
+                } else {
+                    data.status = responseData.status || 'Failed';
+                    showStatus('Submission failed. Please try again.', 'error');
+                }
+                
+                displayData(data);
+                
+            } catch (error) {
+                data.status = 'Network Error';
+                showStatus('Network error occurred. Please check your connection.', 'error');
+                displayData(data);
+            }
+        });
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+        }
+
+        function displayData(data) {
+            const tableBody = document.getElementById('tableBody');
+            const dataSection = document.getElementById('dataSection');
+            
+            tableBody.innerHTML = '';
+            
+            Object.entries(data).forEach(([key, value]) => {
+                const row = tableBody.insertRow();
+                row.insertCell(0).textContent = key.charAt(0).toUpperCase() + key.slice(1);
+                row.insertCell(1).textContent = value;
+            });
+            
+            dataSection.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
